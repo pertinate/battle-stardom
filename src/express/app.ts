@@ -22,14 +22,14 @@ export default () => {
     //     next();
     // });
 
-    // app.use(session({
-    //     secret: config.sessionSecret,
-    //     resave: false,
-    //     saveUninitialized: true,
-    //     cookie: {
-    //         secure: config.nodeEnv !== 'dev'
-    //     }
-    // }));
+    app.use(session({
+        secret: config.sessionSecret,
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            secure: config.nodeEnv !== 'dev'
+        }
+    }));
 
     app.use(router);
 

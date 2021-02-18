@@ -4,8 +4,8 @@ import frontend from './frontend';
 
 const router = Router();
 
-router.use('/api', api);
-
 router.use(frontend);
+
+router.use('/api', api);
 
 export default router;

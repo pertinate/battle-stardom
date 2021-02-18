@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-d
 import Header from './components/header';
 import Home from './pages/home';
 import { useGlobal } from './contexts/global';
+import Login from './pages/auth/login';
+import Register from './pages/auth/register';
 
 function App() {
     const global = useGlobal();
@@ -31,12 +33,12 @@ function App() {
                             <Route
                                 path='/login'
                             >
-
+                                <Login />
                             </Route>
                             <Route
                                 path='/register'
                             >
-
+                                <Register />
                             </Route>
                             <Route
                                 render={() => <Redirect to="/login" />}
