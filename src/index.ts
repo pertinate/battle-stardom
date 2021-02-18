@@ -4,7 +4,7 @@ import config from './util/config';
 
 const express = app();
 
-const port = config.nodeEnv || 8080;
+const port = config.port;
 
 express.listen(port, () => {
     console.log('Server Online');

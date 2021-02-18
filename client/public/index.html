@@ -4,8 +4,20 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <meta property="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="theme-color" content="#000000" />
+    <meta property="description" content="&META_DESCRIPTION" />
+    <meta property="og:title" content="&OG_TITLE" />
+    <meta property="twitter:title" content="&OG_TITLE" />
+    <meta property="og:description" content="&OG_DESCRIPTION" />
+    <meta property="twitter:description" content="&OG_DESCRIPTION" />
+    <meta property="og:image" content="&OG_IMAGE" />
+    <meta property="twitter:image" content="&OG_IMAGE" />
+    <meta property="og:url" content="&OG_URL" />
+    <meta property="twitter:card" content="&OG_URL" />
+    <meta property="og:type" content="&OG_TYPE" />
+    <meta property="og:locale" content="en_US" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -22,21 +34,7 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
 
-    <meta http-equiv="Content-Security-Policy"
-      content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://www.google.com">
-
-    <title>$TITLE</title>
-    <meta name="description" content="$META_DESCRIPTION" />
-    <meta name="og:title" content="$OG_TITLE" />
-    <meta name="twitter:title" content="$OG_TITLE" />
-    <meta name="og:description" content="$OG_DESCRIPTION" />
-    <meta name="twitter:description" content="$OG_DESCRIPTION" />
-    <meta name="og:image" content="$OG_IMAGE" />
-    <meta name="twitter:image" content="$OG_IMAGE" />
-    <meta name="og:url" content="$OG_URL" />
-    <meta name="twitter:card" content="$OG_URL" />
-    <meta name="og:type" content="$OG_TYPE" />
-    <meta name="og:locale" content="en_US" />
+    <title>&TITLE</title>
   </head>
 
   <body>
