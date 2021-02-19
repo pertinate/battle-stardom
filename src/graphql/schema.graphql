@@ -1,0 +1,6 @@
+type Query {
+    playerCount: Int
+}
+type Subscription {
+    deltaPlayerCount: Int
+}
