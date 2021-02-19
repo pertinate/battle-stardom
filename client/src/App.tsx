@@ -6,6 +6,7 @@ import Home from './pages/home';
 import { useGlobal } from './contexts/global';
 import Login from './pages/auth/login';
 import Register from './pages/auth/register';
+import Logout from './pages/auth/logout';
 
 function App() {
     const global = useGlobal();
@@ -15,37 +16,35 @@ function App() {
                 className='h-screen w-full bg-gray-800 lg:bg-red-300'
             >
                 <Header />
-                {
-                    global.isLoggedIn && (
-                        <Switch>
+                <Switch>
+                    {
+                        global.isLoggedIn && (<>
                             <Route
                                 path='/'
-                                exact
                             >
                                 <Home />
                             </Route>
-                        </Switch>
-                    )
-                }
-                {
-                    !global.isLoggedIn && (
-                        <Switch>
-                            <Route
-                                path='/login'
-                            >
-                                <Login />
-                            </Route>
-                            <Route
-                                path='/register'
-                            >
-                                <Register />
-                            </Route>
-                            <Route
-                                render={() => <Redirect to="/login" />}
-                            />
-                        </Switch>
-                    )
-                }
+                        </>)
+                    }
+                    <Route
+                        path='/login'
+                    >
+                        <Login />
+                    </Route>
+                    <Route
+                        path='/register'
+                    >
+                        <Register />
+                    </Route>
+                    <Route
+                        path='/logout'
+                    >
+                        <Logout />
+                    </Route>
+                    <Route
+                        render={() => <Redirect to="/login" />}
+                    />
+                </Switch>
             </div>
         </Router>
     );

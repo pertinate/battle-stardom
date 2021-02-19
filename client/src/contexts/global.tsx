@@ -3,6 +3,8 @@ import Firebase from '../firebase';
 import Cookies from 'universal-cookie';
 import history from '../history';
 
+const cookies = new Cookies();
+
 export const fetcher = async (input: RequestInfo, init?: RequestInit | undefined): Promise<Response> => {
     return fetch(input, {
         ...(init || {}),
@@ -15,10 +17,14 @@ export const fetcher = async (input: RequestInfo, init?: RequestInit | undefined
 
 interface Context {
     isLoggedIn: boolean;
+    isSignedIn: boolean;
+    signOut: () => void;
 }
 
 const context = createContext<Context>({
-    isLoggedIn: false
+    isLoggedIn: false,
+    isSignedIn: !!cookies.get('willAutoSignIn'),
+    signOut: () => { }
 });
 
 interface Props {
@@ -45,11 +51,15 @@ function Global(props: Props) {
 
 const ContextData = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isSignedIn, setIsSignedIn] = useState(false);
-    const cookies = new Cookies();
+    console.log(cookies.get('willAutoSignIn'));
+    const isSignedIn = !!cookies.get('willAutoSignIn');
+
+    const signOut = () => {
+        Firebase.auth().signOut();
+        history.push('/login');
+    };
 
     useEffect(() => {
-        setIsSignedIn(!!cookies.get('willAutoSignIn'));
         Firebase.auth().onAuthStateChanged(user => {
             return user ? setIsLoggedIn(true) : setIsLoggedIn(false);
         });
@@ -58,15 +68,15 @@ const ContextData = () => {
     useEffect(() => {
         if (isLoggedIn) {
             history.push('/');
-            cookies.set('willAutoSignIn', isSignedIn);
-        } else {
-            cookies.set('willAutoSignIn', isSignedIn);
         }
+
+        cookies.set('willAutoSignIn', isLoggedIn);
     }, [isLoggedIn]);
 
     return {
         isLoggedIn,
-        isSignedIn
+        isSignedIn,
+        signOut
     };
 };
 
