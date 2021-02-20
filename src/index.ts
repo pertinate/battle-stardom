@@ -7,18 +7,13 @@ import admin from 'firebase-admin';
 import config from './util/config';
 
 import { pubsub, resolvers, schema } from './graphql';
-
+import { players } from './data';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+import { buildSchema, execute, subscribe } from 'graphql';
 
 const express = app();
 
 const port = config.port;
-
-let playerCount = 0;
-
-// const typeDefs = gql`
-
-//     `;
-;
 
 const gqlServer = new ApolloServer({
     typeDefs: gql(schema),
@@ -40,15 +35,20 @@ const gqlServer = new ApolloServer({
             user
         };
     },
+
+    // subscriptions: '/api/subscriptions'
     subscriptions: {
         path: '/api/subscriptions',
         onConnect: (connectionParams, webSocket, context) => {
+            const { authorization = '' } = connectionParams as ({ authorization: string; });
             console.log('Client connected');
-            pubsub.publish('deltaPlayerCount', { deltaPlayerCount: ++playerCount });
+            // pubsub.publish('deltaPlayerCount', { deltaPlayerCount: players.change(1) });
+            //register clients to iterate over
         },
         onDisconnect: (webSocket, context) => {
             console.log('Client Disconnected');
-            pubsub.publish('deltaPlayerCount', { deltaPlayerCount: --playerCount });
+            // pubsub.publish('deltaPlayerCount', { deltaPlayerCount: players.change(-1) });
+            //remove clients to iterate over
         }
     }
 });
@@ -61,4 +61,13 @@ gqlServer.installSubscriptionHandlers(server);
 
 server.listen(port, () => {
     console.log('Server Online');
+    // SubscriptionServer.create({
+    //     execute,
+    //     subscribe,
+    //     schema: buildSchema(schema)
+    // }, {
+    //     server,
+    //     port: 8081,
+    //     path: '/api/subscriptions'
+    // });
 });
