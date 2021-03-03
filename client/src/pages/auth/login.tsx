@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import { gql, useQuery, useSubscription } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
 import LoadScreen from '../../components/load-screen';
+import { useAuth } from '../../contexts/auth';
 import { useGlobal } from '../../contexts/global';
 import Firebase from '../../firebase';
 
@@ -11,13 +13,14 @@ function Login(props: Props) {
     const [isLoading, setIsLoading] = useState(false);
 
     const global = useGlobal();
-    console.log(global.isSignedIn, global.isLoggedIn);
-    console.log(Firebase.auth().currentUser);
+    const auth = useAuth();
 
-    // Firebase.auth().signInWithEmailAndPassword('ppertinate@gmail.com', 'password').catch(console.error);
-    if (isLoading && global.isLoggedIn) {
+    Firebase.auth().signInWithEmailAndPassword('ppertinate@gmail.com', 'password').catch(console.error);
+    if (isLoading && auth.isLoggedIn) {
         return <LoadScreen text='Logging In...' />;
     }
+
+
 
 
     return (

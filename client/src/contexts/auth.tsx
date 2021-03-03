@@ -16,18 +16,24 @@ export const fetcher = async (input: RequestInfo, init?: RequestInit | undefined
 };
 
 interface Context {
-
+    isLoggedIn: boolean;
+    isSignedIn: boolean;
+    signOut: () => void;
+    token: () => string;
 }
 
 const context = createContext<Context>({
-
+    isLoggedIn: false,
+    isSignedIn: !!cookies.get('willAutoSignIn'),
+    signOut: () => { },
+    token: () => ''
 });
 
 interface Props {
     children: React.ReactNode;
 }
 
-function Global(props: Props) {
+function AuthContext(props: Props) {
     const {
         children
     } = props;
@@ -47,6 +53,7 @@ function Global(props: Props) {
 
 const ContextData = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [token, setToken] = useState('');
     console.log(cookies.get('willAutoSignIn'));
     const isSignedIn = !!cookies.get('willAutoSignIn');
 
@@ -63,6 +70,7 @@ const ContextData = () => {
 
     useEffect(() => {
         if (isLoggedIn) {
+            Firebase?.auth()?.currentUser?.getIdToken?.().then(setToken).catch(error => console.error('Failed to grab token'));
             history.push('/');
         }
 
@@ -70,14 +78,13 @@ const ContextData = () => {
     }, [isLoggedIn]);
 
     return {
-        user: {
-            isLoggedIn,
-            isSignedIn,
-            signOut
-        }
+        isLoggedIn,
+        isSignedIn,
+        signOut,
+        token: () => token
     };
 };
 
-export const useGlobal = () => useContext(context);
+export const useAuth = () => useContext(context);
 
-export default Global;
+export default AuthContext;

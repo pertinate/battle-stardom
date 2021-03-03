@@ -4,12 +4,19 @@ import './tailwind.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Global from './contexts/global';
+import AuthContext from './contexts/auth';
+import Apollo from './contexts/apollo';
+
 
 ReactDOM.render(
     <React.StrictMode>
-        <Global>
-            <App />
-        </Global>
+        <AuthContext>
+            <Apollo>
+                <Global>
+                    <App />
+                </Global>
+            </Apollo>
+        </AuthContext>
     </React.StrictMode>,
     document.getElementById('root')
 );

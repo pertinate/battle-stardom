@@ -13,36 +13,50 @@ import { buildSchema, execute, subscribe } from 'graphql';
 
 const express = app();
 
-const port = config.port;
-
 const gqlServer = new ApolloServer({
     typeDefs: gql(schema),
     resolvers: resolvers,
-    context: async ({ req, connection }) => {
-        const token = req?.headers?.authorization || connection?.context.authorization || '';
+    // context: async ({ req, connection }) => {
+    //     console.log('test');
+    //     const token = req?.headers?.authorization || connection?.context.authorization || '';
 
-        if ((token === 'Bearer' || token === 'Bearer null' || !token.startsWith('Bearer')) && config.nodeEnv !== 'dev') {
-            throw new AuthenticationError('Unauthorized');
-        }
+    //     if ((token === 'Bearer' || token === 'Bearer null' || !token.startsWith('Bearer')) && config.nodeEnv !== 'dev') {
+    //         throw new AuthenticationError('Unauthorized');
+    //     }
 
-        const user = config.nodeEnv === 'dev' ? config.firebaseDev : await admin.auth().verifyIdToken(token.split('Bearer ')[1]);
+    // const user = config.nodeEnv === 'dev' ? config.firebaseDev : await admin.auth().verifyIdToken(token.split('Bearer ')[1]);
 
-        if (!user) {
-            throw new AuthenticationError('You must be logged in');
-        }
+    // if (!user) {
+    //     throw new AuthenticationError('You must be logged in');
+    // }
 
-        return {
-            user
-        };
-    },
+    // return {
+    //     user
+    // };
+    // },
 
     // subscriptions: '/api/subscriptions'
     subscriptions: {
         path: '/api/subscriptions',
-        onConnect: (connectionParams, webSocket, context) => {
+        onConnect: async (connectionParams, webSocket, context) => {
             const { authorization = '' } = connectionParams as ({ authorization: string; });
-            console.log('Client connected');
-            // pubsub.publish('deltaPlayerCount', { deltaPlayerCount: players.change(1) });
+            if (authorization === '') {
+                throw new Error('Failed to authenticate');
+            }
+            console.log('Client connected', authorization);
+            players.registerPlayer();
+            pubsub.publish('deltaPlayerCount', { deltaPlayerCount: players.playerCount() });
+            const user = config.nodeEnv === 'dev' ? config.firebaseDev : await admin.auth().verifyIdToken(authorization);
+
+            if (!user) {
+                throw new AuthenticationError('You must be logged in');
+            }
+
+            //find game user next
+
+            return {
+                user
+            };
             //register clients to iterate over
         },
         onDisconnect: (webSocket, context) => {
@@ -59,8 +73,8 @@ const server = createServer(express);
 
 gqlServer.installSubscriptionHandlers(server);
 
-server.listen(port, () => {
-    console.log('Server Online');
+server.listen(config.port, () => {
+    console.log('Server Online on port:', config.port);
     // SubscriptionServer.create({
     //     execute,
     //     subscribe,

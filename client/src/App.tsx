@@ -7,9 +7,11 @@ import { useGlobal } from './contexts/global';
 import Login from './pages/auth/login';
 import Register from './pages/auth/register';
 import Logout from './pages/auth/logout';
+import { useAuth } from './contexts/auth';
 
 function App() {
     const global = useGlobal();
+    const auth = useAuth();
     return (
         <Router>
             <div
@@ -18,7 +20,7 @@ function App() {
                 <Header />
                 <Switch>
                     {
-                        global.isLoggedIn && (<>
+                        auth.isLoggedIn && (<>
                             <Route
                                 path='/'
                             >

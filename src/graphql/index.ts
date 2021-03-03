@@ -17,7 +17,7 @@ const schema = fs.readFileSync(path.resolve('./src/graphql/schema.graphql')).toS
 
 const resolvers = {
     Query: {
-        playerCount: () => players.playerCount,
+        playerCount: () => players.playerCount(),
         test: (parent: any, args: any, context: any, info: any) => {
             console.log(parent, args, context, info);
             return 'fuck';
