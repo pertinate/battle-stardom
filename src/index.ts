@@ -8,8 +8,7 @@ import config from './util/config';
 
 import { pubsub, resolvers, schema } from './graphql';
 import { players } from './data';
-import { SubscriptionServer } from 'subscriptions-transport-ws';
-import { buildSchema, execute, subscribe } from 'graphql';
+import fs from 'fs';
 
 const express = app();
 
@@ -39,11 +38,13 @@ const gqlServer = new ApolloServer({
     subscriptions: {
         path: '/api/subscriptions',
         onConnect: async (connectionParams, webSocket, context) => {
+            // console.log(webSocket.);
+            fs.writeFileSync('./test', JSON.stringify(webSocket, null, '\t'));
             const { authorization = '' } = connectionParams as ({ authorization: string; });
             if (authorization === '') {
                 throw new Error('Failed to authenticate');
             }
-            console.log('Client connected', authorization);
+            // console.log('Client connected', authorization);
             players.registerPlayer();
             pubsub.publish('deltaPlayerCount', { deltaPlayerCount: players.playerCount() });
             const user = config.nodeEnv === 'dev' ? config.firebaseDev : await admin.auth().verifyIdToken(authorization);

@@ -14,6 +14,17 @@ const players = {
     }
 };
 
+let session: {
+    [id: string]: {
+        email: string;
+    };
+} = {
+    'myuuid': {
+        email: 'ppertinate@gmail.com'
+    }
+};
+
 export {
-    players
+    players,
+    session
 };
